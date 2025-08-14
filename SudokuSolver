@@ -1,0 +1,83 @@
+public class SudokuSolver {
+
+    // Define the size of the Sudoku grid
+    static final int SIZE = 9;
+
+    public static void main(String[] args) {
+        // Input Sudoku grid (0 means empty cell)
+        int[][] grid = {
+            {5, 3, 0, 0, 7, 0, 0, 0, 0},
+            {6, 0, 0, 1, 9, 5, 0, 0, 0},
+            {0, 9, 8, 0, 0, 0, 0, 6, 0},
+            {8, 0, 0, 0, 6, 0, 0, 0, 3},
+            {4, 0, 0, 8, 0, 3, 0, 0, 1},
+            {7, 0, 0, 0, 2, 0, 0, 0, 6},
+            {0, 6, 0, 0, 0, 0, 2, 8, 0},
+            {0, 0, 0, 4, 1, 9, 0, 0, 5},
+            {0, 0, 0, 0, 8, 0, 0, 7, 9}
+        };
+
+        if (solveSudoku(grid)) {
+            System.out.println("Solved Sudoku:");
+            printGrid(grid);
+        } else {
+            System.out.println("No solution exists.");
+        }
+    }
+
+    // Method to solve the Sudoku using backtracking
+    public static boolean solveSudoku(int[][] grid) {
+        for (int row = 0; row < SIZE; row++) {
+            for (int col = 0; col < SIZE; col++) {
+                if (grid[row][col] == 0) {
+                    for (int num = 1; num <= SIZE; num++) {
+                        if (isSafe(grid, row, col, num)) {
+                            grid[row][col] = num;
+
+                            if (solveSudoku(grid)) {
+                                return true;
+                            }
+
+                            grid[row][col] = 0; // Backtrack
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true; // Solved
+    }
+
+    // Check if it's safe to place a number
+    public static boolean isSafe(int[][] grid, int row, int col, int num) {
+        // Check row and column
+        for (int i = 0; i < SIZE; i++) {
+            if (grid[row][i] == num || grid[i][col] == num) {
+                return false;
+            }
+        }
+
+        // Check 3x3 box
+        int startRow = row - row % 3;
+        int startCol = col - col % 3;
+        for (int i = startRow; i < startRow + 3; i++) {
+            for (int j = startCol; j < startCol + 3; j++) {
+                if (grid[i][j] == num) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // Print the Sudoku grid
+    public static void printGrid(int[][] grid) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                System.out.print(grid[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
